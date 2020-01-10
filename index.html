@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Redux design pattern workshop</title>
+</head>
+<body>
+    <div style="text-align: center">
+        <p style="color: red; font-size: 48px;" class="counter-state"></p>
+        <button style="color: blue; font-size: 36px; min-width: 144px" class="plus-button">+</button>
+        <button style="color: blue; font-size: 36px; min-width: 144px" class="minus-button">-</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.0.5/redux.js"></script>
+    <script>
+        const INCREMENT = 'INCREMENT'
+        const DECREMENT = 'DECREMENT'
+
+        const { createStore } = Redux
+
+        const reducer = (state = 0, action) => {
+            switch (action.type) {
+                case INCREMENT:
+                    return state + 1
+                case DECREMENT:
+                    return state - 1
+                default:
+                    return state
+            }
+        }
+
+        class Counter {
+            constructor() {
+                this.store = createStore(reducer)
+
+                this.plus = document.getElementsByClassName('plus-button')[0]
+                this.minus = document.getElementsByClassName('minus-button')[0]
+                this.count = document.getElementsByClassName('counter-state')[0]
+
+                this.init()
+
+                this.store.subscribe(() => this.render())
+                this.render()
+            }
+
+            render () {
+                console.log('New State --------------> ',this.store.getState())
+                this.count.innerHTML = this.store.getState()
+            }
+
+            init() {
+                this.plus.addEventListener('click', () => {
+                    this.store.dispatch({type: INCREMENT})
+                })
+
+                this.minus.addEventListener('click', () => {
+                    this.store.dispatch({type: DECREMENT})
+                })
+            }
+        }
+
+        new Counter()
+    </script>
+</body>
+</html>
